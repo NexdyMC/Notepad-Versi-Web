@@ -1,1 +1,160 @@
-
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notepad</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    --background: #121212;
+    --color: #3760F0;
+    --input-background: #1F1F1F;
+    --font: monospace;
+}
+body {
+    background: var(--background);
+}
+main  {
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+}
+.panel {
+    border: 1px solid var(--color);
+    border-radius: 10px;
+    padding: 10px 30px;
+}
+.input {
+    margin: 10px 0;
+    color: #fff;
+    font-size: 20px;
+}
+input, textarea {
+    font-family: var(--font);
+    background: var(--input-background);
+    color: #fff;
+    border: 1px solid var(--color);
+    border-radius: 8px;
+    width: 100%;
+    font-size: 0.8rem;
+    padding: 10px;
+    margin: 0 5px;
+}
+textarea { height: 400px; }
+button {
+    width: 110px;
+    height: 45px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+}
+#save {
+    background: #00c200;
+    &:hover {
+        background: #019c01;
+        cursor: pointer;
+    }
+    &:active {
+        background: #018c01;
+    }
+}
+#download {
+    background: #00a3cc;
+    &:hover {
+        background: #0088b0;
+        cursor: pointer;
+    }
+    &:active {
+        background: #0077a0;
+    }
+}
+#delate {
+    background: #ff0000;
+    &:hover {
+        background: #cc0000;
+        cursor: pointer;
+    }
+    &:active {
+        background: #b30000;
+    }
+}
+    </style>
+</head>
+<body>
+    <main class="">
+        <div class="panel" >
+            <div class="input">
+                 <h3>Web Notepad  </h3>
+                <div class="input" style="display: flex;">
+                    <input placeholder="title" type="text" name="title" id="title" value="Untitled-1">
+                    <input placeholder="type file" type="text" name="type_file" id="type_file" value=".txt" style="width: 40%;">
+    
+                </div>
+            </div>
+            <div class="text">
+                <textarea placeholder="ketik..." class="input" name="notepad" id="notepad"></textarea>
+            </div>
+            <button id="save">Save</button>
+            <button id="download">Download</button>
+            <button id="delate">Delate</button>
+        </div>
+    </main>
+</body>
+<script>
+/// mengambil id notepad dan title
+const notepad = document.getElementById('notepad');
+const title = document.getElementById('title');
+const type_file = document.getElementById("type_file");
+// save
+document.addEventListener("keydown", function(e) {
+    if (e.ctrlKey && e.key === "s") {
+        e.preventDefault(); 
+        localStorage.setItem('notepad', notepad.value ); // menyimpan data textarea ke localStorage
+        localStorage.setItem('title', title.value ); // menyimpan data title ke localStorage
+        alert('Catatan berhasil disimpan');     
+    }
+});
+document.getElementById('save').addEventListener("click", () => {
+    localStorage.setItem('notepad', notepad.value ); // menyimpan data textarea ke localStorage
+    localStorage.setItem('title', title.value ); // menyimpan data title ke localStorage
+    alert('Catatan berhasil disimpan');     
+});
+window.addEventListener('load', () => {
+    const savedText = localStorage.getItem('notepad');
+    const savedTitle = localStorage.getItem('title');
+    if (savedText) notepad.value = savedText;
+    if (savedTitle) title.value = savedTitle;
+})
+// delate
+document.getElementById('delate').addEventListener('click', () => {
+    let konfirmasi = confirm("Apakah Anda yakin ingin menghapus catatan?");
+    if (konfirmasi) {
+        // Tindakan jika pengguna menekan "OK" (Ya)
+        localStorage.removeItem('notepad')
+        localStorage.removeItem('title')
+        localStorage.clear();
+        alert("Catatan Anda telah dihapus");
+    } else {
+        // Tindakan jika pengguna menekan "Batal" (Tidak)
+        alert("Catatan Anda tidak dihapus \"AMAN\"");
+    }
+});
+// download 
+document.getElementById("download").addEventListener("click", () => {
+    const blob = new Blob([notepad.value]);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download =  title.value + type_file.value; 
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+})
+</script>
+</html>
