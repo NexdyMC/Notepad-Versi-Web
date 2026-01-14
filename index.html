@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>notepad</title>
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" rel="stylesheet">
     <style>
 * {
     margin: 0;
@@ -11,18 +15,19 @@
     box-sizing: border-box;
 }
 :root {
-    --background: #121212;
-    --color: #3760F0;
-    --input-background: #1F1F1F;
-    --font-defaut: monospace ;
-    --font-input: monospace ;
+    --background: #111113;
+    --color: #4775FE9B;
+    --input-background: #CBCBF90B;
+    --font-defaut: 'Arial', 'Google Sans Flex' ;
+    --font-input:  'Arial', 'Google Sans Flex' ;
 }
 body {
+    color: #fff;
     background: var(--background);
     font-family: var(--font-defaut);
 }
 section  {
-    padding: 16px;
+    padding: 10px;
     width: 100%;
     height: 100% ;
 }
@@ -30,14 +35,9 @@ main {
     display: block;
     align-items: center;
     border: 1px solid var(--color);
-    border-radius: 10px;
-    padding: 10px 20px;
+    border-radius: 8px;
+    padding: 10px ;
     box-shadow: 0 0 10px #3760F0;
-}
-.input {
-    margin: 7px 0;
-    color: #fff;
-    font-size: 20px;
 }
 input, textarea {
     font-family: var(--font-input);
@@ -46,82 +46,97 @@ input, textarea {
     border: 1px solid var(--color);
     border-radius: 8px;
     width: 100%;
-    font-size: 1.1em;
-    padding: 10px;
-    margin: 0 5px;
+    font-size: 1em;
+    padding: 8px;
+    resize: none;
 }
-textarea { height: 65vh; }
+textarea { height: 70vh; }
 button {
     font-size: 1.1em;  
     min-width: 110px;
-    padding: 11px;
-    margin: 0 3px;
+    padding: 8px 8px;
     border: none;
-    border-radius: 6px;
-    color: #fff;
+    border-radius: 8px;
+}
+.file {
+    display: flex;
 }
 #save {
-    background: #00c200;
+    background: #29F9120B;
+    border: 1px solid #00C200;
+    color: #00C200;
     &:hover {
-        background: #019c01;
+        background: #17FB0C30;
         cursor: pointer;
     }
     &:active {
-        background: #056b05;
+        background: #3DFF351D;
     }
 }
 #download {
-    background: #00a3cc;
+    background: #0F1B1F;
+    color: #00A3CC;
+    border: 1px solid #00A3CC;
     &:hover {
-        background: #0088b0;
+        background: #004559;
         cursor: pointer;
     }
     &:active {
-        background: #046281;
+        background: #00B2FC3E;
     }
 }
 #delate {
-    background: #ff0000;
+    background: #fc080015;
+    border: 1px solid #FF0000;
+    color: #FF0000;
     &:hover { 
-        background: #cc0000;
+        background: #6A0402;
         cursor: pointer;
     }
     &:active {
-        background: #810404;
+        background: #FC070032;
     }
 }
 .Mode-FUll {
     position: absolute; 
     width: calc(100% - 2px);
     height: calc(100% - 2px);
-    transform: translate(-37px, -33px);
+    transform: translate(-10px, -28px);
     border-radius: 1px;
 }
 .Mode-None{
     display: none;
+}
+
+@media (max-width: 720px) {
+    main {
+        padding: 5px 5px;
+    }
+    section {
+        padding: 5;
+    }
+    .Mode-FUll {
+        transform: translate(-15px, -34px)
+    }
 }
     </style>
 </head>
 <body>
     <section>
         <main>
-            <div class="input" id="input" >
-                <h3>Web Notepad  </h3>
-                <div class="input" style="display: flex;">
-                    <input placeholder="title file" type="text" name="title" id="title" value="Untitled-1">
-                    <input placeholder="type file" type="text" name="type_file" id="type_file" value=".txt" style="width: 40%;">
-                </div>
+            <h2>Web Notepad</h2>
+            <div class="file" id="input" style="padding: 5px 0 ;"> 
+                <input placeholder="title file" type="text" name="title" id="title" value="Untitled-1" style="margin-right: 5px;">
+                <input placeholder="type file" type="text" name="type_file" id="type_file" value=".txt" style="width: 40%;">
             </div>
             <textarea  placeholder="ketik..." class="input" name="notepad" id="notepad"></textarea>
-            <div class="button" id="btn">
+            <div class="tombol" id="btn" style="padding: 5px 0 ;">
                 <button id="save">Save</button>
                 <button id="download">Download</button>
                 <button id="delate">Delate</button>
             </div>
         </main>
-    </section>
-
-    
+    </section>    
 </body>
 <script>
 /// set id notepad dan title
@@ -148,20 +163,20 @@ document.addEventListener("keydown", function(e) {
         btn.classList.toggle("Mode-None");
     }
     // mode text disabled
-    if ( e.ctrlKey && e.key === "x") {
-        // alert("mode Disable")
-    }
+    // if ( e.ctrlKey && e.key === "r") {
+        // alert("")
+    // }
     // delate
     if ( e.ctrlKey && e.key === "d") {
         let konfirmasi = confirm("Apakah Anda yakin ingin menghapus catatan?");
         if (konfirmasi) {
-            // Tindakan jika pengguna menekan "OK" (Ya)
+            // Tindakan jika pengguna menekan "OK"
             localStorage.removeItem('notepad')
             localStorage.removeItem('title')
             localStorage.clear();
             alert("Catatan Anda telah dihapus");
         } else {
-            // Tindakan jika pengguna menekan "Batal" (Tidak)
+            // Tindakan jika pengguna menekan "Batal"
             alert("Catatan Anda tidak dihapus \"AMAN\"");
         }
     }
@@ -207,5 +222,6 @@ document.getElementById("download").addEventListener("click", () => {
 }) 
 </script>
 </html>
-<!-- Website Notepad 2025 V1.2 -->
-<!-- copyright © 2025 Nexdy Project   -->
+
+<!-- Website Notepad 2025 V1.5 -->
+<!-- copyright © 2025 Nexdy Experiment   -->
