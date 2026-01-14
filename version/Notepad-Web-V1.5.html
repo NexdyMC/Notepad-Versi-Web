@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>notepad</title>
+    <!-- font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" rel="stylesheet">
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+:root {
+    --background: #111113;
+    --color: #4775FE9B;
+    --input-background: #CBCBF90B;
+    --font-defaut: 'Arial', 'Google Sans Flex' ;
+    --font-input:  'Arial', 'Google Sans Flex' ;
+}
+body {
+    color: #fff;
+    background: var(--background);
+    font-family: var(--font-defaut);
+}
+section  {
+    padding: 10px;
+    width: 100%;
+    height: 100% ;
+}
+main {
+    display: block;
+    align-items: center;
+    border: 1px solid var(--color);
+    border-radius: 8px;
+    padding: 10px ;
+    box-shadow: 0 0 10px #3760F0;
+}
+input, textarea {
+    font-family: var(--font-input);
+    background: var(--input-background);
+    color: #fff;
+    border: 1px solid var(--color);
+    border-radius: 8px;
+    width: 100%;
+    font-size: 1em;
+    padding: 8px;
+    resize: none;
+}
+textarea { height: 70vh; }
+button {
+    font-size: 1.1em;  
+    min-width: 110px;
+    padding: 8px 8px;
+    border: none;
+    border-radius: 8px;
+}
+.file {
+    display: flex;
+}
+#save {
+    background: #29F9120B;
+    border: 1px solid #00C200;
+    color: #00C200;
+    &:hover {
+        background: #17FB0C30;
+        cursor: pointer;
+    }
+    &:active {
+        background: #3DFF351D;
+    }
+}
+#download {
+    background: #0F1B1F;
+    color: #00A3CC;
+    border: 1px solid #00A3CC;
+    &:hover {
+        background: #004559;
+        cursor: pointer;
+    }
+    &:active {
+        background: #00B2FC3E;
+    }
+}
+#delate {
+    background: #fc080015;
+    border: 1px solid #FF0000;
+    color: #FF0000;
+    &:hover { 
+        background: #6A0402;
+        cursor: pointer;
+    }
+    &:active {
+        background: #FC070032;
+    }
+}
+.Mode-FUll {
+    position: absolute; 
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    transform: translate(-10px, -28px);
+    border-radius: 1px;
+}
+.Mode-None{
+    display: none;
+}
+
+@media (max-width: 720px) {
+    main {
+        padding: 5px 5px;
+    }
+    section {
+        padding: 5;
+    }
+    .Mode-FUll {
+        transform: translate(-15px, -34px)
+    }
+}
+    </style>
+</head>
+<body>
+    <section>
+        <main>
+            <h2>Web Notepad</h2>
+            <div class="file" id="input" style="padding: 5px 0 ;"> 
+                <input placeholder="title file" type="text" name="title" id="title" value="Untitled-1" style="margin-right: 5px;">
+                <input placeholder="type file" type="text" name="type_file" id="type_file" value=".txt" style="width: 40%;">
+            </div>
+            <textarea  placeholder="ketik..." class="input" name="notepad" id="notepad"></textarea>
+            <div class="tombol" id="btn" style="padding: 5px 0 ;">
+                <button id="save">Save</button>
+                <button id="download">Download</button>
+                <button id="delate">Delate</button>
+            </div>
+        </main>
+    </section>    
+</body>
+<script>
+/// set id notepad dan title
+const notepad = document.getElementById('notepad');
+const title = document.getElementById('title');
+const type_file = document.getElementById("type_file");
+
+// shortcut
+document.addEventListener("keydown", function(e) {
+    // variabel
+    const input = document.getElementById('input');
+    const btn = document.getElementById('btn');
+    // save
+    if (e.ctrlKey && e.key === "s") {
+        e.preventDefault(); 
+        localStorage.setItem('notepad', notepad.value ); // menyimpan data textarea ke localStorage
+        localStorage.setItem('title', title.value ); // menyimpan data title ke localStorage
+        alert('Catatan berhasil disimpan');     
+    }
+    // mode focus
+    if ( e.ctrlKey && e.key === "m") { 
+        notepad.classList.toggle("Mode-FUll");
+        input.classList.toggle("Mode-None");
+        btn.classList.toggle("Mode-None");
+    }
+    // mode text disabled
+    // if ( e.ctrlKey && e.key === "r") {
+        // alert("")
+    // }
+    // delate
+    if ( e.ctrlKey && e.key === "d") {
+        let konfirmasi = confirm("Apakah Anda yakin ingin menghapus catatan?");
+        if (konfirmasi) {
+            // Tindakan jika pengguna menekan "OK" (Ya)
+            localStorage.removeItem('notepad')
+            localStorage.removeItem('title')
+            localStorage.clear();
+            alert("Catatan Anda telah dihapus");
+        } else {
+            // Tindakan jika pengguna menekan "Batal" (Tidak)
+            alert("Catatan Anda tidak dihapus \"AMAN\"");
+        }
+    }
+});
+// save
+document.getElementById('save').addEventListener("click", () => {
+    localStorage.setItem('notepad', notepad.value ); // menyimpan data textarea ke localStorage
+    localStorage.setItem('title', title.value ); // menyimpan data title ke localStorage
+    alert('Catatan berhasil disimpan');     
+});
+// windows load
+window.addEventListener('load', () => {
+    const savedText = localStorage.getItem('notepad');
+    const savedTitle = localStorage.getItem('title');
+    if (savedText) notepad.value = savedText;
+    if (savedTitle) title.value = savedTitle;
+})
+// delate
+document.getElementById('delate').addEventListener('click', () => {
+    let konfirmasi = confirm("Apakah Anda yakin ingin menghapus catatan?");
+    if (konfirmasi) {
+        // Tindakan jika pengguna menekan "OK" (Ya)
+        localStorage.removeItem('notepad')
+        localStorage.removeItem('title')
+        localStorage.clear();
+        alert("Catatan Anda telah dihapus");
+    } else {
+        // Tindakan jika pengguna menekan "Batal" (Tidak)
+        alert("Catatan Anda tidak dihapus \"AMAN\"");
+    }
+});
+// download 
+document.getElementById("download").addEventListener("click", () => {
+    const blob = new Blob([notepad.value]);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download =  title.value + type_file.value; 
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}) 
+</script>
+</html>
+
+<!-- Website Notepad 2026 V1.5 -->
+<!-- copyright © 2025 Nexdy Experiment   -->
