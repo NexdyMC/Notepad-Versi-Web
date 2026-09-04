@@ -1,227 +1,763 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>notepad</title>
-    <!-- font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&display=swap" rel="stylesheet">
-    <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notepad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Source+Serif+4:opsz,wght@8..60,300..600&family=JetBrains+Mono:wght@400;500&family=Comfortaa:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+    --bg: #111113;
+    --surface: #18181c;
+    --surface-2: #1e1e23;
+    --text: #f1f1f4;
+    --muted: #93939e;
+    --border: rgba(255,255,255,0.08);
+    --accent: #4775fe;
+    --accent-soft: rgba(71,117,254,0.12);
+    --danger: #ff4b4b;
+    --success: #17c964;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --font-ui: 'Google Sans Flex', 'Inter', system-ui, sans-serif;
+    --font-input: 'Google Sans Flex', 'Inter', system-ui, sans-serif;
+    --font-size: 16px;
+    --shadow: 0 20px 50px -20px rgba(0,0,0,0.6);
 }
-:root {
-    --background: #111113;
-    --color: #4775FE9B;
-    --input-background: #CBCBF90B;
-    --font-defaut: 'Arial', 'Google Sans Flex' ;
-    --font-input:  'Arial', 'Google Sans Flex' ;
-}
-body {
-    color: #fff;
-    background: var(--background);
-    font-family: var(--font-defaut);
-}
-section  {
-    padding: 10px;
-    width: 100%;
-    height: 100% ;
-}
-main {
-    display: block;
-    align-items: center;
-    border: 1px solid var(--color);
-    border-radius: 8px;
-    padding: 10px ;
-    box-shadow: 0 0 10px #3760F0;
-}
-input, textarea {
-    font-family: var(--font-input);
-    background: var(--input-background);
-    color: #fff;
-    border: 1px solid var(--color);
-    border-radius: 8px;
-    width: 100%;
-    font-size: 1em;
-    padding: 8px;
-    resize: none;
-}
-textarea { height: 70vh; }
-button {
-    font-size: 1.1em;  
-    min-width: 110px;
-    padding: 8px 8px;
-    border: none;
-    border-radius: 8px;
-}
-.file {
-    display: flex;
-}
-#save {
-    background: #29F9120B;
-    border: 1px solid #00C200;
-    color: #00C200;
-    &:hover {
-        background: #17FB0C30;
-        cursor: pointer;
-    }
-    &:active {
-        background: #3DFF351D;
-    }
-}
-#download {
-    background: #0F1B1F;
-    color: #00A3CC;
-    border: 1px solid #00A3CC;
-    &:hover {
-        background: #004559;
-        cursor: pointer;
-    }
-    &:active {
-        background: #00B2FC3E;
-    }
-}
-#delate {
-    background: #fc080015;
-    border: 1px solid #FF0000;
-    color: #FF0000;
-    &:hover { 
-        background: #6A0402;
-        cursor: pointer;
-    }
-    &:active {
-        background: #FC070032;
-    }
-}
-.Mode-FUll {
-    position: absolute; 
-    width: calc(100% - 2px);
-    height: calc(100% - 2px);
-    transform: translate(-10px, -28px);
-    border-radius: 1px;
-}
-.Mode-None{
-    display: none;
+html[data-theme="light"]{
+    --bg: #f2f2f5;
+    --surface: #ffffff;
+    --surface-2: #f5f5f8;
+    --text: #17171b;
+    --muted: #6c6c78;
+    --border: rgba(20,20,30,0.09);
+    --accent-soft: rgba(71,117,254,0.08);
+    --shadow: 0 20px 50px -25px rgba(20,20,30,0.25);
 }
 
-@media (max-width: 720px) {
-    main {
-        padding: 5px 5px;
-    }
-    section {
-        padding: 5;
-    }
-    .Mode-FUll {
-        transform: translate(-15px, -34px)
-    }
+body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-ui);
+    min-height: 100vh;
+    transition: background .35s ease, color .35s ease;
 }
-    </style>
+
+section.app{
+    width:100%;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 24px 16px;
+}
+
+main.card{
+    width:100%;
+    max-width: 720px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    transition: background .35s ease, border-color .35s ease;
+}
+
+.topbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+.topbar h1{
+    font-size: 1.05em;
+    font-weight:600;
+    letter-spacing: -0.01em;
+}
+
+.icon-btn{
+    width:38px;
+    height:38px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    cursor:pointer;
+    transition: color .2s ease, border-color .2s ease, transform .15s ease;
+}
+.icon-btn:hover{ color: var(--text); border-color: var(--accent); }
+.icon-btn:active{ transform: scale(0.94); }
+.icon-btn svg{ width:18px; height:18px; }
+
+.file-row{
+    display:flex;
+    gap:8px;
+}
+input[type="text"]{
+    font-family: var(--font-ui);
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.92em;
+    padding: 9px 11px;
+    width:100%;
+    transition: border-color .2s ease;
+}
+input[type="text"]:focus, textarea:focus, select:focus{
+    outline:none;
+    border-color: var(--accent);
+}
+#title{ flex: 1 1 65%; }
+#type_file{ flex: 1 1 30%; }
+
+textarea{
+    font-family: var(--font-input);
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    width:100%;
+    height: 62vh;
+    font-size: var(--font-size);
+    line-height:1.6;
+    padding: 14px;
+    resize: none;
+    transition: border-color .2s ease;
+}
+
+.actions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+button.btn{
+    font-family: var(--font-ui);
+    font-size: 0.95em;
+    font-weight:500;
+    min-width: 100px;
+    flex:1;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    border: 1px solid transparent;
+    cursor:pointer;
+    transition: filter .15s ease, transform .1s ease;
+}
+button.btn:active{ transform: scale(0.98); }
+#save{ background: color-mix(in srgb, var(--success) 14%, transparent); border-color: var(--success); color: var(--success); }
+#save:hover{ background: color-mix(in srgb, var(--success) 26%, transparent); }
+#download{ background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+#download:hover{ filter: brightness(1.2); }
+#delete{ background: color-mix(in srgb, var(--danger) 10%, transparent); border-color: var(--danger); color: var(--danger); }
+#delete:hover{ background: color-mix(in srgb, var(--danger) 20%, transparent); }
+
+.hint{
+    font-size: 0.75em;
+    color: var(--muted);
+    text-align:center;
+}
+.hint kbd{
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    font-family: var(--font-ui);
+}
+
+/* focus mode */
+body.focus main.card > .topbar,
+body.focus main.card > .file-row,
+body.focus main.card > .actions,
+body.focus main.card > .hint{
+    display:none;
+}
+body.focus section.app{ padding:0; }
+body.focus main.card{
+    max-width: 100%;
+    height:100vh;
+    border-radius:0;
+    box-shadow:none;
+    border:none;
+}
+body.focus textarea{ height:100%; }
+
+/* ---------- modal ---------- */
+.overlay{
+    position:fixed;
+    inset:0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 20px;
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition: opacity .25s ease, visibility .25s ease;
+    z-index: 50;
+}
+.overlay.open{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+.modal{
+    width:100%;
+    max-width: 460px;
+    max-height: 85vh;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display:flex;
+    flex-direction:column;
+    transform: translateY(14px) scale(0.97);
+    opacity:0;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1), opacity .22s ease;
+}
+.overlay.open .modal{
+    transform: translateY(0) scale(1);
+    opacity:1;
+}
+.modal-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 16px 18px 0 18px;
+}
+.modal-head h2{ font-size:1em; font-weight:600; }
+.modal-close{
+    width:30px; height:30px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius: 50%;
+    color: var(--muted);
+    cursor:pointer;
+    border:none;
+    background:transparent;
+    transition: background .15s ease, color .15s ease;
+}
+.modal-close:hover{ background: var(--surface-2); color: var(--text); }
+
+.tabs{
+    display:flex;
+    gap: 4px;
+    margin: 14px 18px 0 18px;
+    background: var(--surface-2);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    position:relative;
+}
+.tab-btn{
+    flex:1;
+    z-index:2;
+    padding: 8px 10px;
+    font-family: var(--font-ui);
+    font-size: 0.86em;
+    font-weight:500;
+    background:transparent;
+    border:none;
+    color: var(--muted);
+    cursor:pointer;
+    border-radius: 6px;
+    transition: color .25s ease;
+}
+.tab-btn.active{ color: var(--text); }
+.tab-indicator{
+    position:absolute;
+    top:4px; bottom:4px; left:4px;
+    width: calc(50% - 4px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: transform .28s cubic-bezier(.2,.8,.2,1);
+    z-index:1;
+}
+
+.tab-panels{
+    padding: 16px 18px 18px 18px;
+    overflow-y:auto;
+}
+.tab-panel{ display:none; flex-direction:column; gap:16px; }
+.tab-panel.active{ display:flex; }
+
+.dropzone{
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-sm);
+    padding: 26px 14px;
+    text-align:center;
+    cursor:pointer;
+    transition: border-color .2s ease, background .2s ease;
+}
+.dropzone.drag{ border-color: var(--accent); background: var(--accent-soft); }
+.dropzone svg{ width:26px; height:26px; color: var(--muted); margin-bottom:8px; }
+.dropzone p{ font-size: 0.86em; color: var(--muted); }
+.dropzone strong{ color: var(--text); }
+.dropzone input{ display:none; }
+
+.field{ display:flex; flex-direction:column; gap:8px; }
+.field-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.field label.title{ font-size:0.86em; font-weight:500; }
+.field span.desc{ font-size:0.75em; color:var(--muted); }
+
+input[type="color"]{
+    -webkit-appearance:none;
+    appearance:none;
+    width:38px; height:38px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    padding:0;
+    background:none;
+    cursor:pointer;
+}
+input[type="color"]::-webkit-color-swatch-wrapper{ padding:0; border-radius:50%; }
+input[type="color"]::-webkit-color-swatch{ border:none; border-radius:50%; }
+
+.segmented{
+    display:flex;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding:3px;
+}
+.segmented button{
+    flex:1;
+    padding: 7px 10px;
+    font-family: var(--font-ui);
+    font-size: 0.82em;
+    background:transparent;
+    border:none;
+    border-radius:6px;
+    color: var(--muted);
+    cursor:pointer;
+    transition: all .2s ease;
+}
+.segmented button.active{ background: var(--surface); color: var(--text); border:1px solid var(--border); }
+
+input[type="range"]{
+    -webkit-appearance:none;
+    appearance:none;
+    width:100%;
+    height:4px;
+    border-radius:2px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    cursor:pointer;
+}
+input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    appearance:none;
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background: var(--accent);
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--accent);
+    cursor:pointer;
+}
+input[type="range"]::-moz-range-thumb{
+    width:16px;
+    height:16px;
+    border-radius:50%;
+    background: var(--accent);
+    border: 2px solid var(--surface);
+    box-shadow: 0 0 0 1px var(--accent);
+    cursor:pointer;
+}
+
+select{
+    font-family: var(--font-ui);
+    background: var(--surface-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    font-size: 0.86em;
+    cursor:pointer;
+}
+
+.danger-zone{
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+.danger-zone button{
+    background: transparent;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    border-radius: var(--radius-sm);
+    padding: 9px 10px;
+    font-family: var(--font-ui);
+    font-size: 0.86em;
+    cursor:pointer;
+    transition: background .2s ease;
+}
+.danger-zone button:hover{ background: color-mix(in srgb, var(--danger) 12%, transparent); }
+
+/* toast */
+.toast-wrap{
+    position:fixed;
+    bottom: 20px;
+    left:50%;
+    transform: translateX(-50%);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    z-index:80;
+    align-items:center;
+}
+.toast{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.85em;
+    box-shadow: var(--shadow);
+    opacity:0;
+    transform: translateY(8px);
+    transition: opacity .2s ease, transform .2s ease;
+}
+.toast.show{ opacity:1; transform: translateY(0); }
+
+@media (max-width:520px){
+    main.card{ padding:14px; }
+    textarea{ height:56vh; }
+    button.btn{ min-width:0; font-size:0.88em; }
+    .modal{ max-height:90vh; }
+}
+</style>
 </head>
 <body>
-    <section>
-        <main>
-            <h2>Web Notepad</h2>
-            <div class="file" id="input" style="padding: 5px 0 ;"> 
-                <input placeholder="title file" type="text" name="title" id="title" value="Untitled-1" style="margin-right: 5px;">
-                <input placeholder="type file" type="text" name="type_file" id="type_file" value=".txt" style="width: 40%;">
+<section class="app">
+    <main class="card">
+        <div class="topbar">
+            <h1>Notepad</h1>
+            <button class="icon-btn" id="openSettings" title="Pengaturan &amp; Upload">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+            </button>
+        </div>
+
+        <div class="file-row" id="fileRow">
+            <input type="text" id="title" placeholder="judul file" value="Untitled-1">
+            <input type="text" id="type_file" placeholder=".txt" value=".txt">
+        </div>
+
+        <textarea id="notepad" placeholder="ketik catatanmu di sini..."></textarea>
+
+        <div class="actions" id="actions">
+            <button class="btn" id="save">Save</button>
+            <button class="btn" id="download">Download</button>
+            <button class="btn" id="delete">Delete</button>
+        </div>
+
+        <p class="hint" id="hint"><kbd>Ctrl</kbd>+<kbd>S</kbd> simpan &nbsp; <kbd>Ctrl</kbd>+<kbd>M</kbd> fokus &nbsp; <kbd>Ctrl</kbd>+<kbd>D</kbd> hapus</p>
+    </main>
+</section>
+
+<div class="overlay" id="overlay">
+    <div class="modal">
+        <div class="modal-head">
+            <h2>Pengaturan</h2>
+            <button class="modal-close" id="closeSettings">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-indicator" id="tabIndicator"></div>
+            <button class="tab-btn active" data-tab="upload">Upload File</button>
+            <button class="tab-btn" data-tab="settings">Settings</button>
+        </div>
+
+        <div class="tab-panels">
+            <div class="tab-panel active" id="panel-upload">
+                <label class="dropzone" id="dropzone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <p><strong>Klik untuk pilih file</strong><br>atau seret &amp; lepas file teks di sini</p>
+                    <input type="file" id="fileInput" accept=".txt,.md,.text,.log,.csv,.json,text/plain">
+                </label>
+                <span class="desc">File yang diunggah akan mengisi catatan dan judul secara otomatis.</span>
             </div>
-            <textarea  placeholder="ketik..." class="input" name="notepad" id="notepad"></textarea>
-            <div class="tombol" id="btn" style="padding: 5px 0 ;">
-                <button id="save">Save</button>
-                <button id="download">Download</button>
-                <button id="delate">Delate</button>
+
+            <div class="tab-panel" id="panel-settings">
+                <div class="field">
+                    <div class="field-row">
+                        <label class="title">Warna aksen</label>
+                        <input type="color" id="accentColor" value="#4775fe">
+                    </div>
+                    <span class="desc">Mengubah warna utama tombol, border, dan sorotan.</span>
+                </div>
+
+                <div class="field">
+                    <div class="field-row">
+                        <label class="title">Tampilan</label>
+                        <div class="segmented" id="themeSwitch">
+                            <button data-theme="dark" class="active">Dark</button>
+                            <button data-theme="light">Light</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="field-row">
+                        <label class="title">Gaya font catatan</label>
+                        <select id="fontSelect">
+                            <option value="sans">Sans</option>
+                            <option value="serif">Serif</option>
+                            <option value="mono">Mono</option>
+                            <option value="rounded">Rounded</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <div class="field-row">
+                        <label class="title">Ukuran font</label>
+                        <span class="desc" id="fontSizeValue">16px</span>
+                    </div>
+                    <input type="range" id="fontSizeRange" min="12" max="28" step="1" value="16">
+                </div>
+
+                <div class="danger-zone">
+                    <span class="desc">Menghapus seluruh data catatan dan preferensi yang tersimpan di browser ini.</span>
+                    <button id="clearStorage">Hapus semua data localStorage</button>
+                </div>
             </div>
-        </main>
-    </section>    
-</body>
+        </div>
+    </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
 <script>
-/// set id notepad dan title
 const notepad = document.getElementById('notepad');
 const title = document.getElementById('title');
-const type_file = document.getElementById("type_file");
+const type_file = document.getElementById('type_file');
+const html = document.documentElement;
 
-// shortcut
-document.addEventListener("keydown", function(e) {
-    // variabel
-    const input = document.getElementById('input');
-    const btn = document.getElementById('btn');
-    // save
-    if (e.ctrlKey && e.key === "s") {
-        e.preventDefault(); 
-        localStorage.setItem('notepad', notepad.value ); // menyimpan data textarea ke localStorage
-        localStorage.setItem('title', title.value ); // menyimpan data title ke localStorage
-        alert('Catatan berhasil disimpan');     
-    }
-    // mode focus
-    if ( e.ctrlKey && e.key === "m") { 
-        notepad.classList.toggle("Mode-FUll");
-        input.classList.toggle("Mode-None");
-        btn.classList.toggle("Mode-None");
-    }
-    // mode text disabled
-    // if ( e.ctrlKey && e.key === "r") {
-        // alert("")
-    // }
-    // delate
-    if ( e.ctrlKey && e.key === "d") {
-        let konfirmasi = confirm("Apakah Anda yakin ingin menghapus catatan?");
-        if (konfirmasi) {
-            // Tindakan jika pengguna menekan "OK"
-            localStorage.removeItem('notepad')
-            localStorage.removeItem('title')
-            localStorage.clear();
-            alert("Catatan Anda telah dihapus");
-        } else {
-            // Tindakan jika pengguna menekan "Batal"
-            alert("Catatan Anda tidak dihapus \"AMAN\"");
-        }
-    }
-});
-// save
-document.getElementById('save').addEventListener("click", () => {
-    localStorage.setItem('notepad', notepad.value ); // menyimpan data textarea ke localStorage
-    localStorage.setItem('title', title.value ); // menyimpan data title ke localStorage
-    alert('Catatan berhasil disimpan');     
-});
-// windows load
-window.addEventListener('load', () => {
-    const savedText = localStorage.getItem('notepad');
-    const savedTitle = localStorage.getItem('title');
-    if (savedText) notepad.value = savedText;
-    if (savedTitle) title.value = savedTitle;
-})
-// delate
-document.getElementById('delate').addEventListener('click', () => {
-    let konfirmasi = confirm("Apakah Anda yakin ingin menghapus catatan?");
-    if (konfirmasi) {
-        // Tindakan jika pengguna menekan "OK" (Ya)
-        localStorage.removeItem('notepad')
-        localStorage.removeItem('title')
-        localStorage.clear();
-        alert("Catatan Anda telah dihapus");
-    } else {
-        // Tindakan jika pengguna menekan "Batal" (Tidak)
-        alert("Catatan Anda tidak dihapus \"AMAN\"");
-    }
-});
-// download 
-document.getElementById("download").addEventListener("click", () => {
-    const blob = new Blob([notepad.value]);
+const FONT_MAP = {
+    sans: "'Google Sans Flex', 'Inter', system-ui, sans-serif",
+    serif: "'Source Serif 4', Georgia, serif",
+    mono: "'JetBrains Mono', 'Fira Code', monospace",
+    rounded: "'Comfortaa', 'Google Sans Flex', sans-serif"
+};
+
+// ---------- toast ----------
+function toast(msg){
+    const wrap = document.getElementById('toastWrap');
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    wrap.appendChild(el);
+    requestAnimationFrame(() => el.classList.add('show'));
+    setTimeout(() => {
+        el.classList.remove('show');
+        setTimeout(() => el.remove(), 250);
+    }, 2200);
+}
+
+// ---------- save / download / delete ----------
+function saveNote(){
+    localStorage.setItem('notepad', notepad.value);
+    localStorage.setItem('title', title.value);
+    localStorage.setItem('type_file', type_file.value);
+    toast('Catatan berhasil disimpan');
+}
+function downloadNote(){
+    const blob = new Blob([notepad.value], {type:'text/plain'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download =  title.value + type_file.value; 
+    a.download = (title.value || 'Untitled') + (type_file.value || '.txt');
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-}) 
-</script>
-</html>
+    toast('File diunduh');
+}
+function deleteNote(){
+    const konfirmasi = confirm('Apakah Anda yakin ingin menghapus catatan?');
+    if (konfirmasi){
+        notepad.value = '';
+        title.value = 'Untitled-1';
+        type_file.value = '.txt';
+        localStorage.removeItem('notepad');
+        localStorage.removeItem('title');
+        localStorage.removeItem('type_file');
+        toast('Catatan telah dihapus');
+    } else {
+        toast('Catatan tidak dihapus');
+    }
+}
 
-<!-- Website Notepad 2025 V1.5 -->
-<!-- copyright © 2025 Nexdy Experiment   -->
+document.getElementById('save').addEventListener('click', saveNote);
+document.getElementById('download').addEventListener('click', downloadNote);
+document.getElementById('delete').addEventListener('click', deleteNote);
+
+// ---------- shortcuts ----------
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 's'){
+        e.preventDefault();
+        saveNote();
+    }
+    if (e.ctrlKey && e.key === 'm'){
+        e.preventDefault();
+        document.body.classList.toggle('focus');
+    }
+    if (e.ctrlKey && e.key === 'd'){
+        e.preventDefault();
+        deleteNote();
+    }
+});
+
+// ---------- load on start ----------
+window.addEventListener('load', () => {
+    const savedText = localStorage.getItem('notepad');
+    const savedTitle = localStorage.getItem('title');
+    const savedType = localStorage.getItem('type_file');
+    const savedTheme = localStorage.getItem('theme');
+    const savedAccent = localStorage.getItem('accent');
+    const savedFont = localStorage.getItem('fontStyle');
+    const savedFontSize = localStorage.getItem('fontSize');
+
+    if (savedText !== null) notepad.value = savedText;
+    if (savedTitle) title.value = savedTitle;
+    if (savedType) type_file.value = savedType;
+    if (savedTheme) setTheme(savedTheme);
+    if (savedAccent) setAccent(savedAccent);
+    if (savedFont) setFont(savedFont);
+    if (savedFontSize) setFontSize(savedFontSize);
+});
+
+// ---------- modal ----------
+const overlay = document.getElementById('overlay');
+document.getElementById('openSettings').addEventListener('click', () => overlay.classList.add('open'));
+document.getElementById('closeSettings').addEventListener('click', () => overlay.classList.remove('open'));
+overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') overlay.classList.remove('open'); });
+
+// ---------- tabs ----------
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabIndicator = document.getElementById('tabIndicator');
+tabBtns.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        tabIndicator.style.transform = `translateX(${i * 100}%)`;
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+    });
+});
+
+// ---------- upload file ----------
+const dropzone = document.getElementById('dropzone');
+const fileInput = document.getElementById('fileInput');
+
+function handleFile(file){
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        notepad.value = e.target.result;
+        const dot = file.name.lastIndexOf('.');
+        if (dot > -1){
+            title.value = file.name.slice(0, dot);
+            type_file.value = file.name.slice(dot);
+        } else {
+            title.value = file.name;
+            type_file.value = '';
+        }
+        overlay.classList.remove('open');
+        toast('File "' + file.name + '" berhasil dimuat');
+    };
+    reader.onerror = () => toast('Gagal membaca file');
+    reader.readAsText(file);
+}
+fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+dropzone.addEventListener('dragover', (e) => { e.preventDefault(); dropzone.classList.add('drag'); });
+dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropzone.classList.remove('drag');
+    handleFile(e.dataTransfer.files[0]);
+});
+
+// ---------- settings: accent color ----------
+const accentColor = document.getElementById('accentColor');
+function setAccent(hex){
+    document.documentElement.style.setProperty('--accent', hex);
+    document.documentElement.style.setProperty('--accent-soft', hex + '20');
+    accentColor.value = hex;
+    localStorage.setItem('accent', hex);
+}
+accentColor.addEventListener('input', () => setAccent(accentColor.value));
+
+// ---------- settings: theme ----------
+const themeSwitch = document.getElementById('themeSwitch');
+function setTheme(mode){
+    html.setAttribute('data-theme', mode);
+    themeSwitch.querySelectorAll('button').forEach(b => b.classList.toggle('active', b.dataset.theme === mode));
+    localStorage.setItem('theme', mode);
+}
+themeSwitch.addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (btn) setTheme(btn.dataset.theme);
+});
+
+// ---------- settings: font ----------
+const fontSelect = document.getElementById('fontSelect');
+function setFont(key){
+    const family = FONT_MAP[key] || FONT_MAP.sans;
+    document.documentElement.style.setProperty('--font-input', family);
+    document.documentElement.style.setProperty('--font-ui', family);
+    fontSelect.value = key;
+    localStorage.setItem('fontStyle', key);
+}
+fontSelect.addEventListener('change', () => setFont(fontSelect.value));
+
+// ---------- settings: font size ----------
+const fontSizeRange = document.getElementById('fontSizeRange');
+const fontSizeValue = document.getElementById('fontSizeValue');
+function setFontSize(px){
+    document.documentElement.style.setProperty('--font-size', px + 'px');
+    fontSizeRange.value = px;
+    fontSizeValue.textContent = px + 'px';
+    localStorage.setItem('fontSize', px);
+}
+fontSizeRange.addEventListener('input', () => setFontSize(fontSizeRange.value));
+
+// ---------- settings: clear storage ----------
+document.getElementById('clearStorage').addEventListener('click', () => {
+    const konfirmasi = confirm('Apakah Anda yakin ingin menghapus SEMUA data tersimpan (catatan & preferensi)?');
+    if (konfirmasi){
+        localStorage.clear();
+        notepad.value = '';
+        title.value = 'Untitled-1';
+        type_file.value = '.txt';
+        setTheme('dark');
+        setAccent('#4775fe');
+        setFont('sans');
+        setFontSize(16);
+        toast('Semua data localStorage telah dihapus');
+    } else {
+        toast('Dibatalkan, data tidak dihapus');
+    }
+});
+</script>
+</body>
+</html>
+<!-- Website Notepad 2025 V2.0 -->
+<!-- copyright © 2025 Nexdy Experiment -->
